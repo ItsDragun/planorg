@@ -1050,6 +1050,28 @@
         </div>
     </div>
 
+    <!-- Invitation View Page -->
+    <div id="invitationPage" class="page">
+        <div class="auth-container">
+            <div class="auth-box glass-card" style="max-width: 600px;">
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <div class="sidebar-logo" style="margin-bottom: 20px;">PlanOrg</div>
+                    <h2 style="margin-bottom: 8px;">You're Invited!</h2>
+                    <p style="color: #64748b;">View event details below</p>
+                </div>
+
+                <div id="invitationContent">
+                    <!-- Event details will be loaded here -->
+                </div>
+
+                <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e2e8f0; text-align: center;">
+                    <p style="color: #64748b; margin-bottom: 16px; font-size: 14px;">Want to create your own events?</p>
+                    <button class="btn-gradient" onclick="showPage('authPage')" style="width: 100%;">Sign Up for PlanOrg</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Dashboard -->
     <div id="dashboardPage" class="page">
         <div class="dashboard">
@@ -1335,8 +1357,32 @@
                     loadUserData();
                     showPage('dashboardPage');
                 }
+            } else {
+                // Check if viewing an invitation
+                checkForInvitation();
             }
         });
+
+        // Check for invitation on page load
+        function checkForInvitation() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventData = urlParams.get('event');
+            const inviteId = urlParams.get('invite');
+            
+            if (eventData) {
+                try {
+                    const event = JSON.parse(atob(eventData));
+                    displayInvitationWithData(event);
+                } catch (e) {
+                    console.error('Invalid invitation link');
+                }
+            } else if (inviteId) {
+                displayInvitation(inviteId);
+            }
+        }
+
+        // Make checkForInvitation available globally
+        window.checkForInvitation = checkForInvitation;
     </script>
 
     <script>
@@ -1346,6 +1392,181 @@
         let expenses = [];
         let currentEventId = null;
         let editingEventId = null;
+
+        // Check for invitation on initial load
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventData = urlParams.get('event');
+            const inviteId = urlParams.get('invite');
+            
+            if (eventData) {
+                try {
+                    const event = JSON.parse(atob(eventData));
+                    displayInvitationWithData(event);
+                } catch (e) {
+                    console.error('Invalid invitation link');
+                    showPage('homePage');
+                }
+            } else if (inviteId) {
+                displayInvitation(inviteId);
+            }
+        });
+
+        // Display invitation with event data from URL
+        function displayInvitationWithData(event) {
+            const date = new Date(event.date);
+            const formattedDate = date.toLocaleDateString('en-US', { 
+                weekday: 'long',
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            const mapLink = event.venue ? 
+                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.venue)}` : 
+                '';
+
+            document.getElementById('invitationContent').innerHTML = `
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <h1 style="font-size: 32px; font-weight: 800; color: #1e293b; margin-bottom: 8px;">${event.name}</h1>
+                </div>
+
+                <div style="background: rgba(79, 70, 229, 0.05); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 24px;">📅</span>
+                            <div>
+                                <div style="font-size: 14px; color: #64748b; font-weight: 600;">DATE & TIME</div>
+                                <div style="font-size: 16px; color: #1e293b; font-weight: 600;">${formattedDate}</div>
+                                <div style="font-size: 15px; color: #64748b;">${event.time}</div>
+                            </div>
+                        </div>
+
+                        ${event.venue ? `
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 24px;">📍</span>
+                            <div style="flex: 1;">
+                                <div style="font-size: 14px; color: #64748b; font-weight: 600;">LOCATION</div>
+                                <div style="font-size: 15px; color: #1e293b;">${event.venue}</div>
+                                ${mapLink ? `<a href="${mapLink}" target="_blank" style="font-size: 14px; color: #4f46e5; text-decoration: none; font-weight: 600;">View on Google Maps →</a>` : ''}
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        ${event.guests ? `
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 24px;">👥</span>
+                            <div>
+                                <div style="font-size: 14px; color: #64748b; font-weight: 600;">EXPECTED GUESTS</div>
+                                <div style="font-size: 16px; color: #1e293b; font-weight: 600;">${event.guests}</div>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                ${event.description ? `
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">About this Event</h3>
+                    <p style="font-size: 15px; color: #64748b; line-height: 1.6;">${event.description}</p>
+                </div>
+                ` : ''}
+
+                <div style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1)); border-radius: 12px; padding: 20px; text-align: center;">
+                    <p style="font-size: 14px; color: #4f46e5; font-weight: 600; margin: 0;">
+                        🎉 We look forward to seeing you there!
+                    </p>
+                </div>
+            `;
+
+            showPage('invitationPage');
+        }
+
+        // Display invitation
+        function displayInvitation(eventId) {
+            // Load events from localStorage (public events)
+            const allEvents = JSON.parse(localStorage.getItem('events') || '[]');
+            const event = allEvents.find(e => e.id === eventId);
+
+            if (!event) {
+                document.getElementById('invitationContent').innerHTML = `
+                    <div class="empty-state" style="padding: 40px 20px;">
+                        <div class="empty-state-icon">😕</div>
+                        <h3>Event Not Found</h3>
+                        <p>This invitation link may be invalid or the event may have been deleted.</p>
+                    </div>
+                `;
+                showPage('invitationPage');
+                return;
+            }
+
+            const date = new Date(event.date);
+            const formattedDate = date.toLocaleDateString('en-US', { 
+                weekday: 'long',
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            const mapLink = event.venue ? 
+                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.venue)}` : 
+                '';
+
+            document.getElementById('invitationContent').innerHTML = `
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <h1 style="font-size: 32px; font-weight: 800; color: #1e293b; margin-bottom: 8px;">${event.name}</h1>
+                </div>
+
+                <div style="background: rgba(79, 70, 229, 0.05); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 24px;">📅</span>
+                            <div>
+                                <div style="font-size: 14px; color: #64748b; font-weight: 600;">DATE & TIME</div>
+                                <div style="font-size: 16px; color: #1e293b; font-weight: 600;">${formattedDate}</div>
+                                <div style="font-size: 15px; color: #64748b;">${event.time}</div>
+                            </div>
+                        </div>
+
+                        ${event.venue ? `
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 24px;">📍</span>
+                            <div style="flex: 1;">
+                                <div style="font-size: 14px; color: #64748b; font-weight: 600;">LOCATION</div>
+                                <div style="font-size: 15px; color: #1e293b;">${event.venue}</div>
+                                ${mapLink ? `<a href="${mapLink}" target="_blank" style="font-size: 14px; color: #4f46e5; text-decoration: none; font-weight: 600;">View on Google Maps →</a>` : ''}
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        ${event.guests ? `
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 24px;">👥</span>
+                            <div>
+                                <div style="font-size: 14px; color: #64748b; font-weight: 600;">EXPECTED GUESTS</div>
+                                <div style="font-size: 16px; color: #1e293b; font-weight: 600;">${event.guests}</div>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                ${event.description ? `
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">About this Event</h3>
+                    <p style="font-size: 15px; color: #64748b; line-height: 1.6;">${event.description}</p>
+                </div>
+                ` : ''}
+
+                <div style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1)); border-radius: 12px; padding: 20px; text-align: center;">
+                    <p style="font-size: 14px; color: #4f46e5; font-weight: 600; margin: 0;">
+                        🎉 We look forward to seeing you there!
+                    </p>
+                </div>
+            `;
+
+            showPage('invitationPage');
+        }
 
         // Page Navigation
         function showPage(pageId) {
@@ -1710,7 +1931,24 @@
             document.getElementById('eventVenue').value = event.venue;
             document.getElementById('eventDescription').value = event.description;
 
-            const invitationLink = `${window.location.origin}/invitation/${id}`;
+            // Generate invitation link with event data encoded
+            const baseUrl = window.location.origin + window.location.pathname;
+            
+            // Create a shareable event object (remove sensitive data if needed)
+            const shareableEvent = {
+                id: event.id,
+                name: event.name,
+                date: event.date,
+                time: event.time,
+                guests: event.guests,
+                venue: event.venue,
+                description: event.description
+            };
+            
+            // Encode event data in base64
+            const eventData = btoa(JSON.stringify(shareableEvent));
+            const invitationLink = `${baseUrl}?event=${eventData}`;
+            
             document.getElementById('invitationLink').value = invitationLink;
             document.getElementById('eventInvitation').style.display = 'block';
             
