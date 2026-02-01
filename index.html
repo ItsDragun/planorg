@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlanOrg - Event Planning Made Simple</title>
-    <link rel="icon" type="image/x-icon" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;600;800&family=Space+Mono:wght@400;700&display=swap');
@@ -128,20 +128,10 @@
             align-items: center;
             gap: 12px;
         }
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            align-items: center;
-        }
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-            font-size: 15px;
-        }
-        .nav-link:hover {
-            color: var(--gradient-start);
+        .nav-logo img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
         }
         .nav-actions {
             display: flex;
@@ -561,6 +551,14 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-logo img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
         }
         .sidebar-nav { flex: 1; }
         .nav-item {
@@ -753,6 +751,7 @@
             max-height: 90vh;
             overflow-y: auto;
             padding: 40px;
+            position: relative;
         }
         .modal-header {
             margin-bottom: 32px;
@@ -919,6 +918,108 @@
             border-radius: 0 8px 8px 0;
         }
 
+        /* Guest List Styles */
+        .mode-toggle {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            background: var(--bg-primary);
+            padding: 4px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            width: fit-content;
+        }
+        .mode-btn {
+            padding: 10px 24px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-family: 'Epilogue', sans-serif;
+        }
+        .mode-btn.active {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+        }
+        .guest-mode { display: none; }
+        .guest-mode.active { display: block; }
+        
+        .guests-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+        .guests-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        .guests-table td {
+            padding: 16px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .guests-table tr td:first-child {
+            border-left: 1px solid var(--border-color);
+            border-radius: 8px 0 0 8px;
+        }
+        .guests-table tr td:last-child {
+            border-right: 1px solid var(--border-color);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .spreadsheet-container {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .spreadsheet-grid {
+            overflow-x: auto;
+        }
+        .spreadsheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        .spreadsheet-table th {
+            background: var(--bg-secondary);
+            padding: 12px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .spreadsheet-table td {
+            padding: 0;
+            border: 1px solid var(--border-color);
+        }
+        .spreadsheet-table input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-family: 'Epilogue', sans-serif;
+            color: var(--text-primary);
+        }
+        .spreadsheet-table input:focus {
+            outline: 2px solid var(--gradient-start);
+            background: var(--accent-light);
+        }
+        .spreadsheet-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
         .empty-state { text-align: center; padding: 80px 20px; }
         .empty-state-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.5; }
         .empty-state h3 { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
@@ -1065,7 +1166,6 @@
             .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); }
             .main-canvas { padding: 20px; }
             .form-grid { grid-template-columns: 1fr; }
-            .nav-links { display: none; }
             .hero-content h1 { font-size: 36px; }
             .section-header h2 { font-size: 36px; }
         }
@@ -1079,14 +1179,8 @@
         <nav class="navbar">
             <div class="nav-content">
                 <div class="nav-logo">
-                    <span>📅</span>
+                    <img src="logo.png" alt="PlanOrg Logo">
                     <span>PlanOrg</span>
-                </div>
-                <div class="nav-links">
-                    <a href="#" class="nav-link">Product</a>
-                    <a href="#" class="nav-link">Features</a>
-                    <a href="#" class="nav-link">Pricing</a>
-                    <a href="#" class="nav-link">About</a>
                 </div>
                 <div class="nav-actions">
                     <button class="btn-login" onclick="showPage('authPage')">Log In</button>
@@ -1153,9 +1247,9 @@
                     <p>Integrated Google Maps support ensures guests never get lost finding your event venue.</p>
                 </div>
                 <div class="feature-card glass-card">
-                    <div class="feature-icon">🎨</div>
-                    <h3>Customizable</h3>
-                    <p>Personalize your events with custom images, descriptions, and branding to match your style.</p>
+                    <div class="feature-icon">👥</div>
+                    <h3>Guest Management</h3>
+                    <p>Add guests individually or import them in bulk with our built-in spreadsheet feature.</p>
                 </div>
                 <div class="feature-card glass-card">
                     <div class="feature-icon">⚡</div>
@@ -1240,7 +1334,10 @@
     <div class="auth-container">
         <div class="auth-box glass-card" style="max-width: 600px;">
             <div style="text-align: center; margin-bottom: 32px;">
-                <div class="sidebar-logo" style="margin-bottom: 20px;">PlanOrg</div>
+                <div class="sidebar-logo" style="margin-bottom: 20px; justify-content: center;">
+                    <img src="logo.png" alt="PlanOrg Logo">
+                    <span>PlanOrg</span>
+                </div>
                 <h2 style="margin-bottom: 8px;">You're Invited!</h2>
                 <p style="color: var(--text-secondary);">View event details below</p>
             </div>
@@ -1259,9 +1356,13 @@
 <div id="dashboardPage" class="page">
     <div class="dashboard">
         <div class="sidebar">
-            <div class="sidebar-logo">PlanOrg</div>
+            <div class="sidebar-logo">
+                <img src="logo.png" alt="PlanOrg Logo">
+                <span>PlanOrg</span>
+            </div>
             <div class="sidebar-nav">
                 <div class="nav-item active" onclick="switchTab('events', this)"><span>📅</span><span>Events</span></div>
+                <div class="nav-item" onclick="switchTab('guests', this)"><span>👥</span><span>Guest List</span></div>
                 <div class="nav-item" onclick="switchTab('budget', this)"><span>💰</span><span>Budget & Expenses</span></div>
                 <div class="nav-item" onclick="switchTab('settings', this)"><span>⚙️</span><span>Settings</span></div>
             </div>
@@ -1290,6 +1391,76 @@
                     <button class="btn-gradient" onclick="openModal('eventModal')">Create Event</button>
                 </div>
             </div>
+
+            <!-- Guest List Tab -->
+            <div id="guestsTab" class="tab-content">
+                <div class="canvas-header"><h1>Guest List</h1><p>Manage your event guests</p></div>
+                <div class="action-bar">
+                    <div class="input-group" style="margin: 0; flex: 1; max-width: 300px;">
+                        <label>Select Event</label>
+                        <select id="guestEventSelect" onchange="loadGuestList()"><option value="">Choose an event...</option></select>
+                    </div>
+                    <div class="mode-toggle">
+                        <button class="mode-btn active" onclick="switchGuestMode('oneByOne', this)">One by One</button>
+                        <button class="mode-btn" onclick="switchGuestMode('spreadsheet', this)">Spreadsheet</button>
+                    </div>
+                </div>
+                <div id="guestContent" style="display: none;">
+                    <!-- One by One Mode -->
+                    <div id="oneByOneMode" class="guest-mode active">
+                        <div class="glass-card" style="padding: 24px; margin-bottom: 24px;">
+                            <button class="btn-gradient" onclick="openModal('guestModal')">+ Add Guest</button>
+                        </div>
+                        <div class="glass-card" style="padding: 24px;">
+                            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Guests</h3>
+                            <table class="guests-table">
+                                <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>RSVP</th><th>Actions</th></tr></thead>
+                                <tbody id="guestsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Spreadsheet Mode -->
+                    <div id="spreadsheetMode" class="guest-mode">
+                        <div class="spreadsheet-container">
+                            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">Import Guests</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 14px;">Fill in the table below and click "Import All Guests" to add multiple guests at once.</p>
+                            <div class="spreadsheet-grid">
+                                <table class="spreadsheet-table" id="spreadsheetTable">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 30%;">Name</th>
+                                            <th style="width: 30%;">Email</th>
+                                            <th style="width: 25%;">Phone</th>
+                                            <th style="width: 15%;">RSVP</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="spreadsheetBody">
+                                        <!-- Rows will be added dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="spreadsheet-actions">
+                                <button class="btn-gradient" onclick="importSpreadsheetGuests()">Import All Guests</button>
+                                <button class="btn-outline btn-small" onclick="addSpreadsheetRow()">+ Add Row</button>
+                                <button class="btn-outline btn-small" onclick="clearSpreadsheet()">Clear All</button>
+                            </div>
+                        </div>
+                        <div class="glass-card" style="padding: 24px; margin-top: 24px;">
+                            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Current Guests</h3>
+                            <table class="guests-table">
+                                <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>RSVP</th><th>Actions</th></tr></thead>
+                                <tbody id="spreadsheetGuestsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="emptyGuestState" class="empty-state">
+                    <div class="empty-state-icon">👥</div>
+                    <h3>Select an Event</h3>
+                    <p>Choose an event to manage its guest list</p>
+                </div>
+            </div>
+
             <!-- Budget Tab -->
             <div id="budgetTab" class="tab-content">
                 <div class="canvas-header"><h1>Budget & Expenses</h1><p>Track your spending and stay on budget</p></div>
@@ -1439,6 +1610,32 @@
                 <button type="button" class="btn-copy" onclick="copyInvitation(this)">Copy</button>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Guest Modal -->
+<div id="guestModal" class="modal">
+    <div class="modal-content glass-card">
+        <button class="close-modal" onclick="closeModal('guestModal')">×</button>
+        <div class="modal-header"><h2>Add Guest</h2></div>
+        <form onsubmit="saveGuest(event)">
+            <div class="form-grid">
+                <div class="input-group"><label>Name *</label><input type="text" id="guestName" required></div>
+                <div class="input-group"><label>Email</label><input type="email" id="guestEmail" placeholder="Optional"></div>
+            </div>
+            <div class="form-grid">
+                <div class="input-group"><label>Phone</label><input type="tel" id="guestPhone" placeholder="Optional"></div>
+                <div class="input-group">
+                    <label>RSVP Status</label>
+                    <select id="guestRSVP">
+                        <option value="Pending">Pending</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Declined">Declined</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn-gradient" style="width: 100%;">Add Guest</button>
+        </form>
     </div>
 </div>
 
@@ -1604,7 +1801,9 @@ window.addEventListener('auth-ready-no-user', function() {
 // ─── GLOBAL STATE ────────────────────────────────────────────
 let events = [];
 let expenses = [];
+let guests = [];
 let currentEventId = null;
+let currentGuestEventId = null;
 let editingEventId = null;
 let venueSearchTimeout = null;
 let currentEventImageData = null;
@@ -1804,6 +2003,14 @@ async function loadUserData() {
                 if (currentEventId) loadBudgetData();
             }
         );
+        window.firestoreOnSnapshot(
+            window.firestoreQuery(window.firestoreCollection(window.db, 'guests'), window.firestoreWhere('userId', '==', window.currentUser.uid)),
+            (snap) => {
+                guests = [];
+                snap.forEach(doc => guests.push({ id: doc.id, ...doc.data() }));
+                if (currentGuestEventId) loadGuestList();
+            }
+        );
     } catch (err) { console.error('Error loading user data:', err); }
 }
 window.loadUserData = loadUserData;
@@ -1814,10 +2021,211 @@ function switchTab(tab, clickedEl) {
     clickedEl.closest('.nav-item').classList.add('active');
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     if (tab === 'events') document.getElementById('eventsTab').classList.add('active');
+    else if (tab === 'guests') document.getElementById('guestsTab').classList.add('active');
     else if (tab === 'budget') document.getElementById('budgetTab').classList.add('active');
     else if (tab === 'settings') document.getElementById('settingsTab').classList.add('active');
 }
 window.switchTab = switchTab;
+
+// ─── GUEST LIST MODE TOGGLE ──────────────────────────────────
+function switchGuestMode(mode, btn) {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.guest-mode').forEach(m => m.classList.remove('active'));
+    if (mode === 'oneByOne') {
+        document.getElementById('oneByOneMode').classList.add('active');
+    } else {
+        document.getElementById('spreadsheetMode').classList.add('active');
+        initializeSpreadsheet();
+    }
+}
+window.switchGuestMode = switchGuestMode;
+
+// ─── SPREADSHEET FUNCTIONALITY ───────────────────────────────
+function initializeSpreadsheet() {
+    const tbody = document.getElementById('spreadsheetBody');
+    if (tbody.children.length === 0) {
+        for (let i = 0; i < 10; i++) {
+            addSpreadsheetRow();
+        }
+    }
+}
+
+function addSpreadsheetRow() {
+    const tbody = document.getElementById('spreadsheetBody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td><input type="text" placeholder="Guest name"></td>
+        <td><input type="email" placeholder="email@example.com"></td>
+        <td><input type="tel" placeholder="+1234567890"></td>
+        <td>
+            <select style="width:100%;padding:12px;border:none;background:transparent;font-family:'Epilogue',sans-serif;color:var(--text-primary);">
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Declined">Declined</option>
+            </select>
+        </td>
+    `;
+    tbody.appendChild(row);
+}
+window.addSpreadsheetRow = addSpreadsheetRow;
+
+function clearSpreadsheet() {
+    if (!confirm('Clear all rows in the spreadsheet?')) return;
+    document.getElementById('spreadsheetBody').innerHTML = '';
+    for (let i = 0; i < 10; i++) {
+        addSpreadsheetRow();
+    }
+}
+window.clearSpreadsheet = clearSpreadsheet;
+
+async function importSpreadsheetGuests() {
+    if (!currentGuestEventId) {
+        alert('Please select an event first');
+        return;
+    }
+    
+    const rows = document.getElementById('spreadsheetBody').querySelectorAll('tr');
+    let importedCount = 0;
+    let errorCount = 0;
+    
+    for (const row of rows) {
+        const inputs = row.querySelectorAll('input, select');
+        const name = inputs[0].value.trim();
+        const email = inputs[1].value.trim();
+        const phone = inputs[2].value.trim();
+        const rsvp = inputs[3].value;
+        
+        if (name) {
+            try {
+                // FIXED: Properly create document reference with auto-generated ID
+                const guestsCollection = window.firestoreCollection(window.db, 'guests');
+                const newGuestRef = window.firestoreDoc(guestsCollection);
+                
+                await window.firestoreSetDoc(newGuestRef, {
+                    eventId: currentGuestEventId,
+                    name: name,
+                    email: email || '',
+                    phone: phone || '',
+                    rsvp: rsvp,
+                    userId: window.currentUser.uid,
+                    createdAt: new Date().toISOString()
+                });
+                importedCount++;
+            } catch (err) {
+                console.error('Error importing guest:', err);
+                errorCount++;
+            }
+        }
+    }
+    
+    if (importedCount > 0) {
+        alert(`Successfully imported ${importedCount} guest(s)!${errorCount > 0 ? ` (${errorCount} failed)` : ''}`);
+        clearSpreadsheet();
+    } else {
+        alert('No guests to import. Please fill in at least the name field.');
+    }
+}
+window.importSpreadsheetGuests = importSpreadsheetGuests;
+
+// ─── GUEST LIST MANAGEMENT ───────────────────────────────────
+function loadGuestList() {
+    const sel = document.getElementById('guestEventSelect').value;
+    if (!sel) {
+        document.getElementById('guestContent').style.display = 'none';
+        document.getElementById('emptyGuestState').style.display = 'block';
+        return;
+    }
+    
+    currentGuestEventId = sel;
+    document.getElementById('guestContent').style.display = 'block';
+    document.getElementById('emptyGuestState').style.display = 'none';
+    
+    renderGuestList();
+}
+window.loadGuestList = loadGuestList;
+
+function renderGuestList() {
+    const eventGuests = guests.filter(g => g.eventId === currentGuestEventId);
+    
+    // Render for One by One mode
+    const tbody = document.getElementById('guestsTableBody');
+    if (!eventGuests.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-secondary);">No guests yet</td></tr>';
+    } else {
+        tbody.innerHTML = eventGuests.map(g => `
+            <tr class="table-row-hover">
+                <td><strong>${g.name}</strong></td>
+                <td>${g.email || '-'}</td>
+                <td>${g.phone || '-'}</td>
+                <td><span style="padding:4px 12px;background:${getRSVPColor(g.rsvp)};border-radius:12px;font-size:12px;font-weight:600;">${g.rsvp}</span></td>
+                <td><button class="btn-small btn-outline" onclick="deleteGuest('${g.id}')">Delete</button></td>
+            </tr>
+        `).join('');
+    }
+    
+    // Render for Spreadsheet mode
+    const tbody2 = document.getElementById('spreadsheetGuestsTableBody');
+    if (!eventGuests.length) {
+        tbody2.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-secondary);">No guests yet</td></tr>';
+    } else {
+        tbody2.innerHTML = eventGuests.map(g => `
+            <tr class="table-row-hover">
+                <td><strong>${g.name}</strong></td>
+                <td>${g.email || '-'}</td>
+                <td>${g.phone || '-'}</td>
+                <td><span style="padding:4px 12px;background:${getRSVPColor(g.rsvp)};border-radius:12px;font-size:12px;font-weight:600;">${g.rsvp}</span></td>
+                <td><button class="btn-small btn-outline" onclick="deleteGuest('${g.id}')">Delete</button></td>
+            </tr>
+        `).join('');
+    }
+}
+
+function getRSVPColor(rsvp) {
+    if (rsvp === 'Confirmed') return '#d1fae5';
+    if (rsvp === 'Declined') return '#fee2e2';
+    return '#e0e7ff';
+}
+
+async function saveGuest(e) {
+    e.preventDefault();
+    
+    if (!currentGuestEventId) {
+        alert('Please select an event first');
+        return;
+    }
+    
+    try {
+        await window.firestoreSetDoc(
+            window.firestoreDoc(window.firestoreCollection(window.db, 'guests')),
+            {
+                eventId: currentGuestEventId,
+                name: document.getElementById('guestName').value,
+                email: document.getElementById('guestEmail').value,
+                phone: document.getElementById('guestPhone').value,
+                rsvp: document.getElementById('guestRSVP').value,
+                userId: window.currentUser.uid,
+                createdAt: new Date().toISOString()
+            }
+        );
+        
+        closeModal('guestModal');
+        document.getElementById('guestName').value = '';
+        document.getElementById('guestEmail').value = '';
+        document.getElementById('guestPhone').value = '';
+        document.getElementById('guestRSVP').value = 'Pending';
+    } catch (err) {
+        alert('Error adding guest: ' + err.message);
+    }
+}
+window.saveGuest = saveGuest;
+
+function deleteGuest(id) {
+    if (!confirm('Delete this guest?')) return;
+    window.firestoreDeleteDoc(window.firestoreDoc(window.db, 'guests', id))
+        .catch(err => alert('Error deleting guest: ' + err.message));
+}
+window.deleteGuest = deleteGuest;
 
 // ─── IMAGE UPLOAD ────────────────────────────────────────────
 function handleImageSelect(evt) {
@@ -1904,6 +2312,10 @@ window.selectVenue = selectVenue;
 // ─── MODAL ───────────────────────────────────────────────────
 function openModal(modalId) {
     if (modalId === 'eventModal' && !editingEventId) resetEventForm();
+    if (modalId === 'guestModal' && !currentGuestEventId) {
+        alert('Please select an event first');
+        return;
+    }
     document.getElementById(modalId).classList.add('active');
     if (modalId === 'eventModal') setTimeout(setupVenueAutocomplete, 100);
 }
@@ -2024,7 +2436,11 @@ function deleteEvent(id) {
     window.firestoreDeleteDoc(window.firestoreDoc(window.db, 'events', id))
         .then(() => {
             const toDelete = expenses.filter(e => e.eventId === id);
-            return Promise.all(toDelete.map(ex => window.firestoreDeleteDoc(window.firestoreDoc(window.db, 'expenses', ex.id))));
+            const guestsToDelete = guests.filter(g => g.eventId === id);
+            return Promise.all([
+                ...toDelete.map(ex => window.firestoreDeleteDoc(window.firestoreDoc(window.db, 'expenses', ex.id))),
+                ...guestsToDelete.map(g => window.firestoreDeleteDoc(window.firestoreDoc(window.db, 'guests', g.id)))
+            ]);
         })
         .catch(err => alert('Error deleting event: ' + err.message));
 }
@@ -2174,6 +2590,7 @@ function updateEventSelects() {
     const opts = events.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
     document.getElementById('budgetEventSelect').innerHTML = '<option value="">Choose an event...</option>' + opts;
     document.getElementById('expenseEventSelect').innerHTML = '<option value="">Select an event...</option>' + opts;
+    document.getElementById('guestEventSelect').innerHTML = '<option value="">Choose an event...</option>' + opts;
 }
 
 function loadBudgetData() {
